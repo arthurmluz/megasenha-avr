@@ -5,13 +5,15 @@
 #define ROWS 3
 #define COLUMNS 9
 
-char keys[ROWS][COLUMNS] = {"123456789", "\0\0\0\0\0\0\0\0\0", {'\0', '\0', '<', '\0', 'v', '\0', '>', '\0', '\0'}};
+char keys[ROWS][COLUMNS] = {"123456789",
+                            "         ",
+                            "  < v >  "};
 
-char pins_in[COLUMNS] = {PC6, PD0, PD1, PD2, PD3, PD4, PB6, PB7, PD5};
-volatile uint8_t *p_in[COLUMNS] = {&PINC, &PIND, &PIND, &PIND, &PIND, &PINB, &PINB, &PIND};
-volatile uint8_t *ports_in[COLUMNS] = {&PORTC, &PORTD, &PORTD, &PORTD, &PORTD, &PORTB, &PORTB, &PORTD};
+char pins_in[COLUMNS]               = {PC6,    PD0,    PD1,    PD2,    PD3,    PD4,    PB6,    PB7,    PD5};
+volatile uint8_t *p_in[COLUMNS]     = {&PINC,  &PIND,  &PIND,  &PIND,  &PIND,  &PIND,  &PINB,  &PINB,  &PIND};
+volatile uint8_t *ports_in[COLUMNS] = {&PORTC, &PORTD, &PORTD, &PORTD, &PORTD, &PORTD, &PORTB, &PORTB, &PORTD};
 
-char pins_out[ROWS] = {PD6, PD7, PB0};
+char pins_out[ROWS]               = {PD6,    PD7,    PB0};
 volatile uint8_t *ports_out[ROWS] = {&PORTD, &PORTD, &PORTB};
 
 void keypad_init() {
