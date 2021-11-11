@@ -38,12 +38,6 @@ void keypad_init() {
     }
 } 
 
-void print(char *s) {
-    while(*s) {
-        uart_tx(*s++);
-    }
-}
-
 char keypad_poll() {
     for(int row = 0; row < ROWS; row++) {
         volatile uint8_t *row_port = row_ports[row];

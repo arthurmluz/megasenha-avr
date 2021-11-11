@@ -18,9 +18,17 @@
 #include "nokia5110.h"
 #include "keypad.h"
 #include "uart.h"
+#include "ws2812.h"
+
+rgb_s colors[3] = {{.r = 255, .g = 0, .b = 0}, {.r = 0, .g = 255, .b = 0}, {.r = 0, .g = 0, .b = 255}};
 
 int main(void)
 {
+    ws2812_init();
+    while(1){
+        ws2812_display(colors, 3);
+    }
+
     nokia_lcd_init();
     nokia_lcd_clear();
     nokia_lcd_set_cursor(0,12);
@@ -39,6 +47,8 @@ int main(void)
     nokia_lcd_set_cursor(0, 0);
     nokia_lcd_write_char('A', 1);
     nokia_lcd_render();
+
+
 
     uart_init(57600, 1);
     while(1) {

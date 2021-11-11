@@ -9,6 +9,7 @@
         "eeprom.h": "c",
         "24lcxx.h": "c",
         "nokia5110_chars.h": "c",
-        "io.h": "c"
+        "io.h": "c",
+        "sfr_defs.h": "c"
     }
 }
