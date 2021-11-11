@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "dc_motors.h": "c",
+        "uart.h": "c",
+        "random": "c",
+        "eeprom.h": "c",
+        "24lcxx.h": "c",
+        "nokia5110_chars.h": "c",
+        "io.h": "c"
+    }
+}
