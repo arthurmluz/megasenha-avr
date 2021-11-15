@@ -53,15 +53,7 @@ int main(void)
     uart_init(57600, 1);
     while(1) {
         
-        char c = keypad_poll();
         
-        if(c != 0) {
-            nokia_lcd_set_cursor(0, 12);
-            nokia_lcd_write_char(c, 1);
-            nokia_lcd_render();
-        }
-
-        c = 0;
 
     }
 }
