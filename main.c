@@ -18,12 +18,7 @@ uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
 uint8_t glyph2[] = {0b00111000,0b01111000,0b11111000,0b01111000,0b00111000 };
 
-uint8_t glyph3[] = {
-    0b00011000,
-    0b00100100,
-    0b01001000,
-    0b00100100,
-    0b00011000 };
+uint8_t glyph3[] = {0b00011000,0b00100100,0b01001000,0b00100100,0b00011000 };
 
 typedef struct sel{
     int x, y;
@@ -34,7 +29,6 @@ int password[4];
 int guess[4];
 select cursor = {.x = 20, .y = 0};
 int tentativas = 9;
-
 
 void initializer(){
     nokia_lcd_init();
@@ -152,12 +146,11 @@ int main(void){
         int selected = 0;
         int validadas[2] = {0};
 
-        tentativas = 9;
+        tentativas = 9; // 0 -> 9 = 10
         cursor.x = 20; cursor.y = 0;
         makePassword();
 
         guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
-
 
         redraw(cursor, guess, 0 ); // initialize the screen
         _delay_ms(10);
@@ -205,7 +198,7 @@ int main(void){
         else {
             nokia_lcd_write_string("YOU", 3);
             nokia_lcd_set_cursor(0, 24);
-            nokia_lcd_write_string("WIN", 3);
+            nokia_lcd_write_string("WON", 3);
         }
         nokia_lcd_render();
         _delay_ms(3000);
