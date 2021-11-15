@@ -1,6 +1,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
-#include "uart.h"
+#include "usart.h"
 
 #define ROWS 3
 #define COLUMNS 9

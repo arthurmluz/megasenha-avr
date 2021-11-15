@@ -6,16 +6,24 @@
 #include <util/delay.h>
 #include "nokia5110.h"
 #include "keypad.h"
-#include "uart.h"
+#include "print.h"
 
 #define RIGHT '>'
 #define LEFT '<'
 #define SELECT 'v' 
 #define TRY 'T'
 
+
 uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
 uint8_t glyph2[] = {0b00111000,0b01111000,0b11111000,0b01111000,0b00111000 };
+
+uint8_t glyph3[] = {
+    0b00011000,
+    0b00100100,
+    0b01001000,
+    0b00100100,
+    0b00011000 };
 
 typedef struct sel{
     int x, y;
@@ -25,6 +33,7 @@ typedef struct sel{
 int password[4];
 int guess[4];
 select cursor = {.x = 20, .y = 0};
+int tentativas = 9;
 
 
 void initializer(){
@@ -32,9 +41,10 @@ void initializer(){
     nokia_lcd_clear();
     nokia_lcd_custom(1,glyph);
     nokia_lcd_custom(2,glyph2);
+    nokia_lcd_custom(3,glyph3);
+
 
     keypad_init();
-    uart_init(57600, 1);
 }
 
 void escreveVetor(int vetor[]){
@@ -55,10 +65,23 @@ void redraw(select cursor, int vetor[], int bool ){
     nokia_lcd_clear();
     escreveVetor(vetor);
     nokia_lcd_set_cursor(cursor.x, cursor.y);
+
+    // Cursor
     if(bool)
         nokia_lcd_write_string("\002", 1);
     else
         nokia_lcd_write_string("\001", 1);
+
+    // Tentativas
+    nokia_lcd_set_cursor(60, 34);
+    nokia_lcd_write_string("\003", 2);
+
+    nokia_lcd_set_cursor(72, 40);
+    char buffer[100];
+    snprintf(buffer, sizeof(buffer), "%d", tentativas+1);
+    nokia_lcd_write_string(buffer, 1);
+
+
 
     nokia_lcd_render();
 }
@@ -98,34 +121,94 @@ int moveCursor(char value, int selected){
     return selected;
 }
 
-int 
+int tryToGuess(int validadas[2]){
+    // validadas 0 = Posições Corretas
+    // validadas 1 = Posições incorretas
+    validadas[0] = 0;
+    validadas[1] = 0;
+    for(int i = 0; i < 4; i++ ){
+        if( guess[i] == password[i] ) validadas[0]++;
+        for(int j = i+1; j < 4; j++)
+            if( guess[j] == password[i] ) validadas[1]++;
+    }
+    if( validadas[0] == 4)
+        return 1;
+
+    return 0;
+}
+
 
 int main(void){
     initializer();
     makePassword();
+   printint(password[0]);
+   printint(password[1]);
+   printint(password[2]);
+   printint(password[3]);
 
-    guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
 
-    redraw(cursor, guess, 0 ); // initialize the screen
-    _delay_ms(10);
+    while(1){
+        // reset stuff
+        int selected = 0;
+        int validadas[2] = {0};
 
-    int selected = 0;
-    while(1) {
-        
-        char c = keypad_poll();
+        tentativas = 9;
+        cursor.x = 20; cursor.y = 0;
+        makePassword();
 
-        selected = moveCursor(c, selected);
-        
-        c = keypad_poll();
+        guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
 
-        if( selected ){
-            int arrayPos = (cursor.x-20) / 12; 
-            if( isdigit(c) ){
-                guess[arrayPos] = (int) c - '0';
+
+        redraw(cursor, guess, 0 ); // initialize the screen
+        _delay_ms(10);
+
+        while(tentativas) {
+
+            char c = keypad_poll();
+
+            if( c == 'T' ){
+                if( tryToGuess(validadas) ){
+                    print("GANHOU!!!!!");
+                    break;
+                }
+                tentativas--;
                 redraw(cursor, guess, selected);
+                print("\nPosCorretas: ");
+                printint(validadas[0]);
+                print(",   PosIncorretas: ");
+                printint(validadas[1]);
+
+                _delay_ms(100);
+            }
+
+            selected = moveCursor(c, selected);
+
+            c = keypad_poll();
+
+            if( selected ){
+                int arrayPos = (cursor.x-20) / 12; 
+                if( isdigit(c) ){
+                    guess[arrayPos] = (int) c - '0';
+                    redraw(cursor, guess, selected);
+                }
             }
         }
+        // GAME OVER
+        nokia_lcd_clear();
+        nokia_lcd_set_cursor(0, 0);
+        if(tentativas <= 0){
+            nokia_lcd_write_string("GAME", 3);
+            nokia_lcd_set_cursor(0, 24);
+            nokia_lcd_write_string("OVER", 3);
+        }
 
-
+        else {
+            nokia_lcd_write_string("YOU", 3);
+            nokia_lcd_set_cursor(0, 24);
+            nokia_lcd_write_string("WIN", 3);
+        }
+        nokia_lcd_render();
+        _delay_ms(3000);
     }
+
 }
