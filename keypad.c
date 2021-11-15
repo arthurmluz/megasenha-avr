@@ -1,13 +1,13 @@
 #include <avr/io.h>
 #include <util/delay.h>
-#include "uart.h"
+#include "usart.h"
 
 #define ROWS 3
 #define COLUMNS 9
 
 char keys[ROWS][COLUMNS] = {"123456789",
                             "         ",
-                            "  < v >  "};
+                            "  < v > T"};
 
 char column_pins[COLUMNS]                       = {PC6,    PD0,    PD1,    PD2,    PD3,    PD4,    PB6,    PB7,    PD5};
 volatile uint8_t *column_read_pins[COLUMNS]     = {&PINC,  &PIND,  &PIND,  &PIND,  &PIND,  &PIND,  &PINB,  &PINB,  &PIND};

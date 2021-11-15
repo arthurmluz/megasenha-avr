@@ -11,20 +11,16 @@ SIZE = avr-size
 CFLAGS = -g -mmcu=$(MCU) -Wall -Os -fno-inline-small-functions -fno-split-wide-types -D F_CPU=$(CRYSTAL) -D USART_BAUD=$(SERIAL_BAUDRATE)
 
 all:
-	$(CC) $(CFLAGS) -c nokia5110.c
-	$(CC) $(CFLAGS) -c print.c
-	$(CC) $(CFLAGS) -c keypad.c
 	$(CC) $(CFLAGS) -c main.c
+	$(CC) $(CFLAGS) -c nokia5110.c
 	$(CC) $(CFLAGS) -c usart.c
-	$(CC) $(CFLAGS) -c ws2812.c
-	$(CC) $(CFLAGS) main.o nokia5110.o print.o keypad.o usart.o ws2812.o -o code.elf
+	$(CC) $(CFLAGS) -c adc.c
+	$(CC) $(CFLAGS) -c print.c
+	$(CC) $(CFLAGS) main.o nokia5110.o usart.o adc.o print.o -o code.elf
 	$(OBJCOPY) -R .eeprom -O ihex code.elf code.hex
 	$(OBJDUMP) -d code.elf > code.lst
 	$(OBJDUMP) -h code.elf > code.sec
 	$(SIZE) code.elf
-
-serial_sim:
-	socat -d -d  pty,link=/tmp/ttyS10,raw,echo=0 pty,link=/tmp/ttyS11,raw,echo=0
 
 clean:
 	rm -f *.o *.map *.elf *.sec *.lst *.hex *~
