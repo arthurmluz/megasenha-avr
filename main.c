@@ -57,16 +57,13 @@ void makePassword(){
     password[3] = 1 + rand() % 9;
 }
 
-void redraw(select cursor, int guess[], int isSelected){
+void redraw(select cursor, int guess[]){
     nokia_lcd_clear();
     escreveVetor(guess);
     nokia_lcd_set_cursor(cursor.x, cursor.y);
 
     // Cursor
-    if(isSelected)
-        nokia_lcd_write_string("\002", 1);
-    else
-        nokia_lcd_write_string("\001", 1);
+    nokia_lcd_write_string("\001", 1);
 
     // Tempo
     char secs_remaining_str[3];
@@ -89,39 +86,26 @@ void redraw(select cursor, int guess[], int isSelected){
     nokia_lcd_render();
 }
 
-int moveCursor(char value, int selected){
-
+void moveCursor(char value){
     switch(value){
         case RIGHT:
-            if( selected == 0) {
-                //print("right");
-                if(cursor.x >= 56)
-                   cursor.x = 20;
-                else cursor.x += 12;
-                redraw(cursor, guess, 0);
-                _delay_ms(100);
-            }
+            if(cursor.x >= 56)
+                cursor.x = 20;
+            else cursor.x += 12;
+            redraw(cursor, guess);
+            _delay_ms(100);
+            
             break;
 
         case LEFT:
-            if( selected == 0 ){
-         //       print("left");
-                if(cursor.x <= 20)
-                   cursor.x = 56;
-                else cursor.x -= 12;
-                redraw(cursor, guess, 0);
-                _delay_ms(100);
-            }
-            break;
-
-        case SELECT:
-            selected = 1 - selected;
-            redraw(cursor, guess, selected);
+            if(cursor.x <= 20)
+                cursor.x = 56;
+            else cursor.x -= 12;
+            redraw(cursor, guess);
             _delay_ms(100);
-
+            
+            break;
     }
-
-    return selected;
 }
 
 int tryToGuess(int validadas[2]){
@@ -198,7 +182,6 @@ int main(void){
 
     while(1){
         // reset stuff
-        int selected = 0;
         int validadas[2] = {0};
         secs_remaining = 30;
 
@@ -208,12 +191,12 @@ int main(void){
 
         guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
 
-        redraw(cursor, guess, 0 ); // initialize the screen
+        redraw(cursor, guess); // initialize the screen
         _delay_ms(10);
 
         while(tentativas) {
 
-            redraw(cursor, guess, selected);
+            redraw(cursor, guess);
 
             char c = keypad_poll();
 
@@ -224,7 +207,7 @@ int main(void){
                 }
                 tentativas--;
                 secs_remaining = 30;
-                redraw(cursor, guess, selected);
+                redraw(cursor, guess);
                 print("\nPosCorretas: ");
                 printint(validadas[0]);
                 print(",   PosIncorretas: ");
@@ -233,17 +216,15 @@ int main(void){
                 _delay_ms(100);
             }
 
-            selected = moveCursor(c, selected);
+            moveCursor(c);
 
-            c = keypad_poll();
-
-            if( selected ){
-                int arrayPos = (cursor.x-20) / 12; 
-                if( isdigit(c) ){
-                    guess[arrayPos] = (int) c - '0';
-                    redraw(cursor, guess, selected);
-                }
+            c = keypad_poll();            
+            int arrayPos = (cursor.x-20) / 12; 
+            if( isdigit(c) ){
+                guess[arrayPos] = (int) c - '0';
+                redraw(cursor, guess);
             }
+            
         }
 
         if(tentativas <= 0) {
