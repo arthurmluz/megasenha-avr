@@ -57,13 +57,13 @@ void makePassword(){
     password[3] = 1 + rand() % 9;
 }
 
-void redraw(select cursor, int vetor[], int bool ){
+void redraw(select cursor, int guess[], int isSelected){
     nokia_lcd_clear();
-    escreveVetor(vetor);
+    escreveVetor(guess);
     nokia_lcd_set_cursor(cursor.x, cursor.y);
 
     // Cursor
-    if(bool)
+    if(isSelected)
         nokia_lcd_write_string("\002", 1);
     else
         nokia_lcd_write_string("\001", 1);
@@ -177,6 +177,7 @@ int main(void){
         // reset stuff
         int selected = 0;
         int validadas[2] = {0};
+        secs_remaining = 30;
 
         tentativas = 9; // 0 -> 9 = 10
         cursor.x = 20; cursor.y = 0;
@@ -189,7 +190,7 @@ int main(void){
 
         while(tentativas) {
 
-            redraw(cursor, guess, 0);
+            redraw(cursor, guess, selected);
 
             char c = keypad_poll();
 
