@@ -140,6 +140,29 @@ int tryToGuess(int validadas[2]){
     return 0;
 }
 
+void draw_game_over() {
+    nokia_lcd_clear();
+    nokia_lcd_set_cursor(0, 0);
+
+    nokia_lcd_write_string("GAME", 3);
+    nokia_lcd_set_cursor(0, 24);
+    nokia_lcd_write_string("OVER", 3);
+
+    nokia_lcd_render();
+}
+
+void draw_you_won() {
+    nokia_lcd_clear();
+    nokia_lcd_set_cursor(0, 0);
+
+    nokia_lcd_write_string("YOU", 3);
+    nokia_lcd_set_cursor(0, 24);
+    nokia_lcd_write_string("WON", 3);
+
+    nokia_lcd_render();
+}
+
+
 ISR(TIMER1_COMPA_vect) {
     secs_remaining -= 1;
 
@@ -222,21 +245,12 @@ int main(void){
                 }
             }
         }
-        // GAME OVER
-        nokia_lcd_clear();
-        nokia_lcd_set_cursor(0, 0);
-        if(tentativas <= 0){
-            nokia_lcd_write_string("GAME", 3);
-            nokia_lcd_set_cursor(0, 24);
-            nokia_lcd_write_string("OVER", 3);
-        }
 
-        else {
-            nokia_lcd_write_string("YOU", 3);
-            nokia_lcd_set_cursor(0, 24);
-            nokia_lcd_write_string("WON", 3);
+        if(tentativas <= 0) {
+            draw_game_over();
+        } else {
+            draw_you_won();
         }
-        nokia_lcd_render();
         _delay_ms(3000);
     }
 
