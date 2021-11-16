@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "nokia5110.h"
 #include "keypad.h"
 #include "print.h"
@@ -29,6 +30,7 @@ int password[4];
 int guess[4];
 select cursor = {.x = 20, .y = 0};
 int tentativas = 9;
+int secs_remaining = 30;
 
 void initializer(){
     nokia_lcd_init();
@@ -65,6 +67,13 @@ void redraw(select cursor, int vetor[], int bool ){
         nokia_lcd_write_string("\002", 1);
     else
         nokia_lcd_write_string("\001", 1);
+
+    // Tempo
+    char secs_remaining_str[3];
+    itoa(secs_remaining, secs_remaining_str, 10);
+
+    nokia_lcd_set_cursor(4, 40);
+    nokia_lcd_write_string(secs_remaining_str, 1);
 
     // Tentativas
     nokia_lcd_set_cursor(60, 34);
@@ -131,14 +140,37 @@ int tryToGuess(int validadas[2]){
     return 0;
 }
 
+ISR(TIMER1_COMPA_vect) {
+    secs_remaining -= 1;
+
+    if(secs_remaining <= 0) {
+        tentativas = 0;
+    }
+}
+
+void setup_timer() {
+    TCCR1B = (1 << CS12) | (1 << CS10) | (1 << WGM12);
+
+    // Set the timer's compare match to 15624 because the uc's frequency
+    // is 16,000,000 Hz and we're using a prescaler of 1024. So the counter
+    // is incremented 15625 times a second. 15624 = 15625 - 1, I'm not sure
+    // why we need to subtract 1, but that's what the datasheet says.
+    OCR1AH = 15624 >> 8;
+    OCR1AL = 15624 & 0x00ff;
+
+    TIMSK1 = (1 << OCIE1A);
+}
 
 int main(void){
+    setup_timer();
+    sei();
+
     initializer();
     makePassword();
-   printint(password[0]);
-   printint(password[1]);
-   printint(password[2]);
-   printint(password[3]);
+    printint(password[0]);
+    printint(password[1]);
+    printint(password[2]);
+    printint(password[3]);
 
 
     while(1){
@@ -157,6 +189,8 @@ int main(void){
 
         while(tentativas) {
 
+            redraw(cursor, guess, 0);
+
             char c = keypad_poll();
 
             if( c == 'T' ){
@@ -165,6 +199,7 @@ int main(void){
                     break;
                 }
                 tentativas--;
+                secs_remaining = 30;
                 redraw(cursor, guess, selected);
                 print("\nPosCorretas: ");
                 printint(validadas[0]);
