@@ -22,6 +22,13 @@ uint8_t glyph2[] = {0b00111000,0b01111000,0b11111000,0b01111000,0b00111000 };
 uint8_t heart_outline[] = {0b00011000,0b00100100,0b01001000,0b00100100,0b00011000 };
 uint8_t heart_fill[] = {0b00011000,0b00111100,0b01111000,0b00111100,0b00011000 };
 
+uint8_t hourglass[] = {
+    0b01100011,
+    0b01010101,
+    0b01101011,
+    0b01010101,
+    0b01100011 };
+
 typedef struct sel{
     int x, y;
 } select;
@@ -41,6 +48,7 @@ void initializer(){
     nokia_lcd_custom(2,glyph2);
     nokia_lcd_custom(3,heart_outline);
     nokia_lcd_custom(4,heart_fill);
+    nokia_lcd_custom(5,hourglass);
 
 
     keypad_init();
@@ -73,6 +81,9 @@ void redraw(select cursor, int guess[]){
     itoa(secs_remaining, secs_remaining_str, 10);
 
     nokia_lcd_set_cursor(4, 40);
+    nokia_lcd_write_string("\005", 1);
+
+    nokia_lcd_set_cursor(12, 40);
     nokia_lcd_write_string(secs_remaining_str, 1);
 
     // Tentativas
