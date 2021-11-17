@@ -19,7 +19,8 @@ uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
 uint8_t glyph2[] = {0b00111000,0b01111000,0b11111000,0b01111000,0b00111000 };
 
-uint8_t glyph3[] = {0b00011000,0b00100100,0b01001000,0b00100100,0b00011000 };
+uint8_t heart_outline[] = {0b00011000,0b00100100,0b01001000,0b00100100,0b00011000 };
+uint8_t heart_fill[] = {0b00011000,0b00111100,0b01111000,0b00111100,0b00011000 };
 
 typedef struct sel{
     int x, y;
@@ -29,7 +30,8 @@ typedef struct sel{
 int password[4];
 int guess[4];
 select cursor = {.x = 20, .y = 0};
-int tentativas = 9;
+int max_lives = 10;
+int lives = 10;
 int secs_remaining = 30;
 
 void initializer(){
@@ -37,7 +39,8 @@ void initializer(){
     nokia_lcd_clear();
     nokia_lcd_custom(1,glyph);
     nokia_lcd_custom(2,glyph2);
-    nokia_lcd_custom(3,glyph3);
+    nokia_lcd_custom(3,heart_outline);
+    nokia_lcd_custom(4,heart_fill);
 
 
     keypad_init();
@@ -73,13 +76,21 @@ void redraw(select cursor, int guess[]){
     nokia_lcd_write_string(secs_remaining_str, 1);
 
     // Tentativas
-    nokia_lcd_set_cursor(60, 34);
-    nokia_lcd_write_string("\003", 2);
+    for(int i = 0; i < max_lives; i++) {
+        nokia_lcd_set_cursor(50 + (6 * (i % 5)), 30 + (9 * (i / 5)));
 
-    nokia_lcd_set_cursor(72, 40);
-    char buffer[100];
-    snprintf(buffer, sizeof(buffer), "%d", tentativas+1);
-    nokia_lcd_write_string(buffer, 1);
+        if(i >= max_lives - lives) {
+            nokia_lcd_write_string("\004", 1);
+        } else {
+            nokia_lcd_write_string("\003", 1);
+        }
+    }
+
+
+    // nokia_lcd_set_cursor(72, 40);
+    // char buffer[100];
+    // snprintf(buffer, sizeof(buffer), "%d", lives+1);
+    // nokia_lcd_write_string(buffer, 1);
 
 
 
@@ -151,7 +162,7 @@ ISR(TIMER1_COMPA_vect) {
     secs_remaining -= 1;
 
     if(secs_remaining <= 0) {
-        tentativas = 0;
+        lives = 0;
     }
 }
 
@@ -185,7 +196,7 @@ int main(void){
         int validadas[2] = {0};
         secs_remaining = 30;
 
-        tentativas = 9; // 0 -> 9 = 10
+        lives = max_lives;
         cursor.x = 20; cursor.y = 0;
         makePassword();
 
@@ -194,7 +205,7 @@ int main(void){
         redraw(cursor, guess); // initialize the screen
         _delay_ms(10);
 
-        while(tentativas) {
+        while(lives) {
 
             redraw(cursor, guess);
 
@@ -205,7 +216,7 @@ int main(void){
                     print("GANHOU!!!!!");
                     break;
                 }
-                tentativas--;
+                lives--;
                 secs_remaining = 30;
                 redraw(cursor, guess);
                 print("\nPosCorretas: ");
@@ -227,7 +238,7 @@ int main(void){
             
         }
 
-        if(tentativas <= 0) {
+        if(lives <= 0) {
             draw_game_over();
         } else {
             draw_you_won();
