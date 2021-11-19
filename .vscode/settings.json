@@ -10,6 +10,7 @@
         "24lcxx.h": "c",
         "nokia5110_chars.h": "c",
         "io.h": "c",
-        "sfr_defs.h": "c"
+        "sfr_defs.h": "c",
+        "shift_reg.h": "c"
     }
 }

@@ -8,6 +8,7 @@
 #include "nokia5110.h"
 #include "keypad.h"
 #include "print.h"
+#include "./shift_reg.h"
 
 #define RIGHT '>'
 #define LEFT '<'
@@ -193,6 +194,9 @@ void setup_timer() {
 int main(void){
     setup_timer();
     sei();
+
+    shift_reg_init();
+    shift_reg_write(0b11111111);
 
     initializer();
     makePassword();
