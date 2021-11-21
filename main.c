@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <time.h>
 #include "nokia5110.h"
 #include "keypad.h"
 #include "print.h"
@@ -42,6 +43,17 @@ int max_lives = 10;
 int lives = 10;
 int secs_remaining = 30;
 
+void initializer();
+void escreveVetor(int vetor[]);
+void makePassword();
+void redraw(select cursor, int guess[]);
+void moveCursor(char value);
+int tryToGuess(int validadas[2]);
+void draw_game_over();
+void draw_you_won();
+void setup_timer();
+void light_leds();
+
 void initializer(){
     nokia_lcd_init();
     nokia_lcd_clear();
@@ -50,6 +62,12 @@ void initializer(){
     nokia_lcd_custom(3,heart_outline);
     nokia_lcd_custom(4,heart_fill);
     nokia_lcd_custom(5,hourglass);
+
+    setup_timer();
+    sei();
+
+    shift_reg_init();
+    shift_reg_write(0b11111111);
 
 
     keypad_init();
@@ -169,6 +187,30 @@ void draw_you_won() {
     nokia_lcd_render();
 }
 
+void light_leds(int validadas[2]){
+    uint8_t byte = 0b00000000;
+    for(int i = 0; i < validadas[0]; i++){
+        byte |= 0b00000001;
+        if(i+1 < validadas[0])
+            byte = byte << 1;
+    }
+    byte = byte << 4;
+    for(int i = 0; i < validadas[1]; i++){
+        byte |= 0b00000001;
+        if(i+1 < validadas[1])
+            byte = byte << 1;
+    }
+
+    if( (byte | 0b00001111) == 0b11111111 ){
+        byte = 0b11111111;
+        for(int i = 0; i < 5; i++){
+            shift_reg_write(byte);
+            byte = ~(byte);
+            _delay_ms(500);
+        }
+    }
+    shift_reg_write(byte);
+}
 
 ISR(TIMER1_COMPA_vect) {
     secs_remaining -= 1;
@@ -192,13 +234,11 @@ void setup_timer() {
 }
 
 int main(void){
-    setup_timer();
-    sei();
-
-    shift_reg_init();
-    shift_reg_write(0b11111111);
 
     initializer();
+    srand(time(NULL));
+    printint(time(NULL));
+
     makePassword();
     printint(password[0]);
     printint(password[1]);
@@ -214,6 +254,14 @@ int main(void){
         lives = max_lives;
         cursor.x = 20; cursor.y = 0;
         makePassword();
+        print("\n");
+    printint(password[0]);
+    printint(password[1]);
+    printint(password[2]);
+    printint(password[3]);
+
+        shift_reg_write(0b00000000);
+
 
         guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
 
@@ -229,6 +277,8 @@ int main(void){
             if( c == 'T' ){
                 if( tryToGuess(validadas) ){
                     print("GANHOU!!!!!");
+                    light_leds(validadas);
+
                     break;
                 }
                 lives--;
@@ -238,6 +288,7 @@ int main(void){
                 printint(validadas[0]);
                 print(",   PosIncorretas: ");
                 printint(validadas[1]);
+                light_leds(validadas);
 
                 _delay_ms(100);
             }
