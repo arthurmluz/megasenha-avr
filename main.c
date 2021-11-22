@@ -201,15 +201,16 @@ void light_leds(int validadas[2]){
             byte = byte << 1;
     }
 
-    if( (byte | 0b00001111) == 0b11111111 ){
-        byte = 0b11111111;
-        for(int i = 0; i < 5; i++){
-            shift_reg_write(byte);
-            byte = ~(byte);
-            _delay_ms(500);
-        }
-    }
     shift_reg_write(byte);
+}
+
+void flash_leds() {
+    for(int i = 0; i < 3; i++){
+        shift_reg_write(0xff);
+        _delay_ms(250);
+        shift_reg_write(0x00);
+        _delay_ms(250);
+    }
 }
 
 ISR(TIMER1_COMPA_vect) {
@@ -239,13 +240,6 @@ int main(void){
     srand(time(NULL));
     printint(time(NULL));
 
-    makePassword();
-    printint(password[0]);
-    printint(password[1]);
-    printint(password[2]);
-    printint(password[3]);
-
-
     while(1){
         // reset stuff
         int validadas[2] = {0};
@@ -255,13 +249,12 @@ int main(void){
         cursor.x = 20; cursor.y = 0;
         makePassword();
         print("\n");
-    printint(password[0]);
-    printint(password[1]);
-    printint(password[2]);
-    printint(password[3]);
+        printint(password[0]);
+        printint(password[1]);
+        printint(password[2]);
+        printint(password[3]);
 
         shift_reg_write(0b00000000);
-
 
         guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
 
@@ -308,6 +301,7 @@ int main(void){
             draw_game_over();
         } else {
             draw_you_won();
+            flash_leds();
         }
         _delay_ms(3000);
     }
