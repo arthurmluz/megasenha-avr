@@ -15,7 +15,7 @@
 #define LEFT '<'
 #define SELECT 'v' 
 #define TRY 'T'
-
+#define SYMBOL_COUNT 4
 
 uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
@@ -81,10 +81,10 @@ void escreveVetor(int vetor[]){
 }
 
 void makePassword(){
-    password[0] = 1 + rand() % 9;
-    password[1] = 1 + rand() % 9;
-    password[2] = 1 + rand() % 9;
-    password[3] = 1 + rand() % 9;
+    password[0] = 1 + rand() % SYMBOL_COUNT;
+    password[1] = 1 + rand() % SYMBOL_COUNT;
+    password[2] = 1 + rand() % SYMBOL_COUNT;
+    password[3] = 1 + rand() % SYMBOL_COUNT;
 }
 
 void redraw(select cursor, int guess[]){
@@ -150,15 +150,32 @@ void moveCursor(char value){
 }
 
 int tryToGuess(int validadas[2]){
+
+    char temp[4] = {0, 0, 0, 0};
+
     // validadas 0 = Posições Corretas
     // validadas 1 = Posições incorretas
     validadas[0] = 0;
     validadas[1] = 0;
-    for(int i = 0; i < 4; i++ ){
-        if( guess[i] == password[i] ) validadas[0]++;
-        for(int j = i+1; j < 4; j++)
-            if( guess[j] == password[i] ) validadas[1]++;
+
+
+    for(int i = 0; i < 4; i++){
+        if(guess[i] == password[i]) {
+            temp[i] = 1;
+            validadas[0]++;
+        }
     }
+
+    for(int i = 0; i < 4; i++) {
+        if(temp[i] == 0) {
+           for(int j = 0; j < 4; j++) {
+               if(temp[j] == 0 && guess[i] == password[j]) {
+                   validadas[1]++;
+               }
+           } 
+        }
+    }
+
     if( validadas[0] == 4)
         return 1;
 

@@ -3,16 +3,16 @@
 #include "usart.h"
 
 #define ROWS 3
-#define COLUMNS 9
+#define COLUMNS 4
 
-char keys[ROWS][COLUMNS] = {"123456789",
-                            "         ",
-                            "  < v > T"};
+char keys[ROWS][COLUMNS] = {"1234",
+                            "    ",
+                            "<> T"};
 
-char column_pins[COLUMNS]                       = {PC6,    PD0,    PD1,    PD2,    PD3,    PD4,    PB6,    PB7,    PD5};
-volatile uint8_t *column_read_pins[COLUMNS]     = {&PINC,  &PIND,  &PIND,  &PIND,  &PIND,  &PIND,  &PINB,  &PINB,  &PIND};
-volatile uint8_t *column_ports[COLUMNS]         = {&PORTC, &PORTD, &PORTD, &PORTD, &PORTD, &PORTD, &PORTB, &PORTB, &PORTD};
-volatile uint8_t *column_ddrs[COLUMNS]          = {&DDRC,  &DDRD,  &DDRD,  &DDRD,  &DDRD,  &DDRD,  &DDRB,  &DDRB,  &DDRD};
+char column_pins[COLUMNS]                       = {PC6,    PD0,    PD1,    PD2};
+volatile uint8_t *column_read_pins[COLUMNS]     = {&PINC,  &PIND,  &PIND,  &PIND};
+volatile uint8_t *column_ports[COLUMNS]         = {&PORTC, &PORTD, &PORTD, &PORTD};
+volatile uint8_t *column_ddrs[COLUMNS]          = {&DDRC,  &DDRD,  &DDRD,  &DDRD};
 
 char row_pins[ROWS]                  = {PD6,    PD7,    PB0};
 volatile uint8_t *row_ports[ROWS]    = {&PORTD, &PORTD, &PORTB};
