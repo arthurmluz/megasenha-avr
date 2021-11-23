@@ -187,18 +187,27 @@ void draw_you_won() {
     nokia_lcd_render();
 }
 
+void draw_start() {
+    nokia_lcd_clear();
+
+    nokia_lcd_set_cursor(4, 12);
+    nokia_lcd_write_string("PRESS ANY KEY", 1);
+
+    nokia_lcd_set_cursor(20, 24);
+    nokia_lcd_write_string("TO START", 1);
+
+    nokia_lcd_render();
+}
+
 void light_leds(int validadas[2]){
-    uint8_t byte = 0b00000000;
-    for(int i = 0; i < validadas[0]; i++){
-        byte |= 0b00000001;
-        if(i+1 < validadas[0])
-            byte = byte << 1;
+    uint8_t byte = 0;
+
+    for(int i = 0; i < 4; i++){
+        byte |= (validadas[0] > i) << i;
     }
-    byte = byte << 4;
-    for(int i = 0; i < validadas[1]; i++){
-        byte |= 0b00000001;
-        if(i+1 < validadas[1])
-            byte = byte << 1;
+
+    for(int i = 0; i < 4; i++){
+        byte |= (validadas[1] > i) << (i + 4);
     }
 
     shift_reg_write(byte);
@@ -235,12 +244,20 @@ void setup_timer() {
 }
 
 int main(void){
-
     initializer();
-    srand(time(NULL));
-    printint(time(NULL));
 
     while(1){
+
+        unsigned int seed = 0;
+
+        draw_start();
+
+        while(keypad_poll() == 0) {
+            seed++;
+        }
+
+        srand(seed);
+
         // reset stuff
         int validadas[2] = {0};
         secs_remaining = 30;
