@@ -81,15 +81,14 @@ void escreveVetor(int vetor[]){
 }
 
 void makePassword(){
-    for(int i = 0; i < 4; i++) {
-        a: // Perdao pelo goto
+    for(int i = 0; i < 4; i++){
         password[i] = 1 + rand() % SYMBOL_COUNT;
-        for(int j = 0; j < i; j++) {
-            if(password[i] == password[j]) {
-                goto a;
+        for(int j = 0; j < i; j++){
+            if(password[i] == password[j]){
+                i--; // se diminuir o i, a gente volta pra mesma posição
+                break;
             }
         }
-        
     }
 }
 
