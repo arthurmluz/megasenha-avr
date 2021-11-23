@@ -15,7 +15,7 @@
 #define LEFT '<'
 #define SELECT 'v' 
 #define TRY 'T'
-#define SYMBOL_COUNT 4
+#define SYMBOL_COUNT 9
 
 uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
@@ -81,10 +81,16 @@ void escreveVetor(int vetor[]){
 }
 
 void makePassword(){
-    password[0] = 1 + rand() % SYMBOL_COUNT;
-    password[1] = 1 + rand() % SYMBOL_COUNT;
-    password[2] = 1 + rand() % SYMBOL_COUNT;
-    password[3] = 1 + rand() % SYMBOL_COUNT;
+    for(int i = 0; i < 4; i++) {
+        a: 
+        password[i] = 1 + rand() % SYMBOL_COUNT;
+        for(int j = 0; j < i; j++) {
+            if(password[i] == password[j]) {
+                goto a;
+            }
+        }
+        
+    }
 }
 
 void redraw(select cursor, int guess[]){
