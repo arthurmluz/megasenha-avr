@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <avr/io.h>
 #include <stdlib.h>
@@ -17,9 +16,7 @@
 #define TRY 'T'
 #define SYMBOL_COUNT 9
 
-uint8_t glyph[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
-
-uint8_t glyph2[] = {0b00111000,0b01111000,0b11111000,0b01111000,0b00111000 };
+uint8_t cursor_icon[] = { 0b00111000,0b01101000,0b11001000,0b01101000,0b00111000 };
 
 uint8_t heart_outline[] = {0b00011000,0b00100100,0b01001000,0b00100100,0b00011000 };
 uint8_t heart_fill[] = {0b00011000,0b00111100,0b01111000,0b00111100,0b00011000 };
@@ -57,8 +54,7 @@ void light_leds();
 void initializer(){
     nokia_lcd_init();
     nokia_lcd_clear();
-    nokia_lcd_custom(1,glyph);
-    nokia_lcd_custom(2,glyph2);
+    nokia_lcd_custom(1,cursor_icon);
     nokia_lcd_custom(3,heart_outline);
     nokia_lcd_custom(4,heart_fill);
     nokia_lcd_custom(5,hourglass);
