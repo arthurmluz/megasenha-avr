@@ -1,5 +1,7 @@
 # T2 de PBN
 
+[https://github.com/arthurmluz/megasenha-avr](https://github.com/arthurmluz/megasenha-avr)
+
 **Integrantes:** Lucas Antunes e Arthur Luz
 
 Para rodar o trabalho, execute `make`, abra `circuit.simu` no simulide e carregue o arquivo `code.hex` no microcontrolador.
