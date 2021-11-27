@@ -12,7 +12,6 @@
 
 #define RIGHT '>'
 #define LEFT '<'
-#define SELECT 'v' 
 #define TRY 'T'
 #define SYMBOL_COUNT 9
 
@@ -283,12 +282,9 @@ int main(void){
         lives = max_lives;
         cursor.x = 20; cursor.y = 0;
         makePassword();
-        print("\n");
-        printint(password[0]);
-        printint(password[1]);
-        printint(password[2]);
-        printint(password[3]);
 
+        print("\n"); printint(password[0]); printint(password[1]); printint(password[2]); printint(password[3]);
+        
         shift_reg_write(0b00000000);
 
         guess[0] = 1; guess[1] = 1; guess[2] = 1; guess[3] = 1;
@@ -306,16 +302,12 @@ int main(void){
                 if( tryToGuess(validadas) ){
                     print("GANHOU!!!!!");
                     light_leds(validadas);
-
                     break;
                 }
+
                 lives--;
                 secs_remaining = 30;
                 redraw(cursor, guess);
-                print("\nPosCorretas: ");
-                printint(validadas[0]);
-                print(",   PosIncorretas: ");
-                printint(validadas[1]);
                 light_leds(validadas);
 
                 _delay_ms(100);

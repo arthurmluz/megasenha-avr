@@ -1,3 +1,6 @@
+//  Esse código foi pego de algum dos arquivos disponibilizados no moodle para facilitar debug
+
+
 #include "usart.h"
 
 // VALUE = F_FPU / (16 * BAUD) - 1

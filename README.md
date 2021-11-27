@@ -1,4 +1,4 @@
-# T2 de PBN
+# T2 de Programação em Baixo Nível
 
 [https://github.com/arthurmluz/megasenha-avr](https://github.com/arthurmluz/megasenha-avr)
 

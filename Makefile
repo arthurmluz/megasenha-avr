@@ -16,9 +16,8 @@ all:
 	$(CC) $(CFLAGS) -c keypad.c
 	$(CC) $(CFLAGS) -c main.c
 	$(CC) $(CFLAGS) -c usart.c
-	$(CC) $(CFLAGS) -c ws2812.c
 	$(CC) $(CFLAGS) -c shift_reg.c
-	$(CC) $(CFLAGS) main.o nokia5110.o print.o keypad.o usart.o ws2812.o shift_reg.o -o code.elf
+	$(CC) $(CFLAGS) main.o nokia5110.o print.o keypad.o usart.o shift_reg.o -o code.elf
 	$(OBJCOPY) -R .eeprom -O ihex code.elf code.hex
 	$(OBJDUMP) -d code.elf > code.lst
 	$(OBJDUMP) -h code.elf > code.sec

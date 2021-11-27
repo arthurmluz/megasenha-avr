@@ -1,3 +1,5 @@
+//  Esse código foi pego de algum dos arquivos disponibilizados no moodle para facilitar debug
+
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
