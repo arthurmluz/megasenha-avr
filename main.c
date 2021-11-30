@@ -281,7 +281,7 @@ int main(void){
         draw_start();
 
         while(keypad_poll() == 0) {
-            // seed++;
+            seed++;
         }
 
         srand(seed);
