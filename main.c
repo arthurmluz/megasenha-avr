@@ -150,36 +150,47 @@ void moveCursor(char value){
 }
 
 int tryToGuess(int validadas[2]){
+    // 1 7 5 2
+    // x x 2 x
 
-    char temp[4] = {0, 0, 0, 0};
+    char ignorePasswPositions[4] = {0, 0, 0, 0};
+    char ignoreGuessPositions[4] = {0, 0, 0, 0};
+
+    int correct = 0;
+    int incorrect = 0;
+
+    for(int idx = 0; idx < 4; idx++) {
+        if (guess[idx] == password[idx]) {
+            correct++;
+            ignoreGuessPositions[idx] = 1;
+            ignorePasswPositions[idx] = 1;
+        }
+    }
+
+    for(int passwIdx = 0; passwIdx < 4; passwIdx++) {
+        if(ignorePasswPositions[passwIdx]) {
+            continue;
+        }
+
+        for(int guessIdx = 0; guessIdx < 4; guessIdx++) {
+            if(ignoreGuessPositions[guessIdx]) {
+                continue;
+            }
+
+            if (guess[guessIdx] == password[passwIdx] && guessIdx != passwIdx) {
+                incorrect++;
+                ignoreGuessPositions[guessIdx] = 1;
+                break;
+            }
+        } 
+    }
 
     // validadas 0 = Posições Corretas
     // validadas 1 = Posições incorretas
-    validadas[0] = 0;
-    validadas[1] = 0;
+    validadas[0] = correct;
+    validadas[1] = incorrect;
 
-
-    for(int i = 0; i < 4; i++){
-        if(guess[i] == password[i]) {
-            temp[i] = 1;
-            validadas[0]++;
-        }
-    }
-
-    for(int i = 0; i < 4; i++) {
-        if(temp[i] == 0) {
-           for(int j = 0; j < 4; j++) {
-               if(temp[j] == 0 && guess[i] == password[j]) {
-                   validadas[1]++;
-               }
-           } 
-        }
-    }
-
-    if( validadas[0] == 4)
-        return 1;
-
-    return 0;
+    return correct == 4;
 }
 
 void draw_game_over() {
@@ -270,7 +281,7 @@ int main(void){
         draw_start();
 
         while(keypad_poll() == 0) {
-            seed++;
+            // seed++;
         }
 
         srand(seed);
