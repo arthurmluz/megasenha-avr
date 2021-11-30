@@ -157,7 +157,7 @@ int tryToGuess(int validadas[2]){
     char ignoreGuessPositions[4] = {0, 0, 0, 0};
 
     int correctPositions = 0;
-    int incorrectPositions = 0;
+    int misplacedNumbers = 0;
 
     for(int idx = 0; idx < 4; idx++) {
         if (guess[idx] == password[idx]) {
@@ -178,7 +178,7 @@ int tryToGuess(int validadas[2]){
             }
 
             if (guess[guessIdx] == password[passwIdx] && guessIdx != passwIdx) {
-                incorrectPositions++;
+                misplacedNumbers++;
                 ignoreGuessPositions[guessIdx] = 1;
                 break;
             }
@@ -188,7 +188,7 @@ int tryToGuess(int validadas[2]){
     // validadas 0 = Posições Corretas
     // validadas 1 = Posições incorretas
     validadas[0] = correctPositions;
-    validadas[1] = incorrectPositions;
+    validadas[1] = misplacedNumbers;
 
     return correctPositions == 4;
 }
