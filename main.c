@@ -156,12 +156,12 @@ int tryToGuess(int validadas[2]){
     char ignorePasswPositions[4] = {0, 0, 0, 0};
     char ignoreGuessPositions[4] = {0, 0, 0, 0};
 
-    int correct = 0;
-    int incorrect = 0;
+    int correctPositions = 0;
+    int incorrectPositions = 0;
 
     for(int idx = 0; idx < 4; idx++) {
         if (guess[idx] == password[idx]) {
-            correct++;
+            correctPositions++;
             ignoreGuessPositions[idx] = 1;
             ignorePasswPositions[idx] = 1;
         }
@@ -178,7 +178,7 @@ int tryToGuess(int validadas[2]){
             }
 
             if (guess[guessIdx] == password[passwIdx] && guessIdx != passwIdx) {
-                incorrect++;
+                incorrectPositions++;
                 ignoreGuessPositions[guessIdx] = 1;
                 break;
             }
@@ -187,10 +187,10 @@ int tryToGuess(int validadas[2]){
 
     // validadas 0 = Posições Corretas
     // validadas 1 = Posições incorretas
-    validadas[0] = correct;
-    validadas[1] = incorrect;
+    validadas[0] = correctPositions;
+    validadas[1] = incorrectPositions;
 
-    return correct == 4;
+    return correctPositions == 4;
 }
 
 void draw_game_over() {
